@@ -2,5 +2,6 @@
 20*
 *.csv
 *.xlsx
+*.xls
 DataIncubatorChallenge.ipynb
 cb*
