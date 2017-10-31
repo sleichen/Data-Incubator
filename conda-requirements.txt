@@ -1,0 +1,5 @@
+pandas
+bokeh = 0.12.7
+flask
+jinja2
+pip
