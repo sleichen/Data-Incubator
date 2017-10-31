@@ -5,14 +5,17 @@ import numpy as np
 import itertools
 from bokeh.plotting import figure, show, output_notebook
 from bokeh.embed import components
+from bokeh.layouts import widgetbox, column
+from bokeh.models import CustomJS
+from bokeh.models.widgets import Dropdown, CheckboxButtonGroup
 import seaborn as sns
 
 import state_abbr
 
 app = Flask(__name__)
 
-agi_data = pd.read_csv('agi_data',index_col = 0)
-plot_data = agi_data[['agi05','agi06','agi07','agi08','agi09','agi10','agi11','agi12','agi13','agi14']]
+observed_data = pd.read_csv('observed_agi_per_return',index_col = 0)
+predicted_data = pd.read_csv('predicted_agi_per_return',index_col = 0)
 
 @app.route('/')
 @app.route('/index.html', methods = ['GET','POST'])
@@ -35,17 +38,37 @@ def index():
         colors = itertools.cycle(palette.as_hex())
 
         plot = figure(plot_width=400, plot_height=400,\
-             title = 'Total Adjusted Gross Income',
-             x_axis_label = 'Year',
-             y_axis_label = 'AGI ($ millions)')
+        title = 'Adjusted Gross Income per Return',\
+        x_axis_label = 'Year',\
+        y_axis_label = 'AGI/Return ($ thousands)')
 
-
+        pred_plots = []
+        obs_plots = []
         for state, color in itertools.izip(states_abbr, colors):
-            plot.line([5,6,7,8,9,10,11,12,13,14],plot_data.loc[state]/10**6,line_width=3,legend = state,line_color = color)    
+            #predicted = plot.line([8,9,10,11,12,13,14,15,16],predicted_data.loc[state],line_width=3,legend = state,\
+            #          line_color = color,line_dash="4 4")
+            pred_plots.append(plot.line([8,9,10,11,12,13,14,15,16],predicted_data.loc[state],line_width=3,legend = state,\
+              line_color = color,line_dash="4 4"))
+            #observed = plot.line([5,6,7,8,9,10,11,12,13,14,15],observed_data.loc[state],line_width=3,legend = state,line_color = color)
+            obs_plots.append(plot.line([5,6,7,8,9,10,11,12,13,14,15],observed_data.loc[state],line_width=3,legend = state,line_color = color))
+            plot.legend.location = 'top_left'
 
+        checkbox_button_group = CheckboxButtonGroup(\
+            labels=["Recorded Data", "Predictions"], active=[0, 1])
+
+        args = {'predicted' + str(i) : pred_plots[i] for i in xrange(len(pred_plots))}
+        args.update({'observed' + str(i) : obs_plots[i] for i in xrange(len(obs_plots))})
+        args['checkbox_button_group']=checkbox_button_group
+
+        code = ""
+        for i in xrange(len(obs_plots)):
+            code += "predicted"+ str(i)+".visible = checkbox_button_group.active.includes(1); \n"
+            code += "observed"+ str(i)+".visible = checkbox_button_group.active.includes(0);"
+
+        checkbox_button_group.callback = CustomJS(args=args, code=code)
         
-        
-        bok_script, bok_div = components(plot)  
+        layout = column(plot,checkbox_button_group)
+        bok_script, bok_div = components(layout)  
     
     return render_template('/index.html', script = script, bok_script = bok_script, bok_div = bok_div )
         
