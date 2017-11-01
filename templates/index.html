@@ -41,14 +41,10 @@
  
     <div class="row">
         <div class="col-md-8" id="mapid"></div>
-        <!--<div id="mapid" style="width: 800px; height: 600px;"></div>-->
-        <!--<div style= 'float:left'> {{ lineplot_div | safe }} </div>-->
-        <div class="col-md-4"> <div class='page'>{{ lineplot_div | safe }}</div> </div>
+
+        <div class="col-md-4"> <div class="page">{{ lineplot_div | safe }}</div> </div>
     </div>
-    <!--
-    <div class="well">
-        <p>To begin, use the map to select some states. Then click Submit.</p>
-    </div> <!-- /well -->
+
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">The States You Have Selected</h3>
@@ -62,8 +58,12 @@
         </form> 
     </div><!-- /panel -->
 
-    <div class='page'> {{ barplot_div | safe }} </div>
-
+    <div class="row">
+        <div class="col-md-8"> <div class="page"> {{ barplot_div | safe }} </div> </div>
+        <div class="col-md-4"> <h3>There are two important conclusions from these correlations:</h3>
+            <p><h4>1) More people make more money (even per person!).</h4></p>
+            <p><h4>2) Negative correlations between income and EVERY other feature (measured as a fraction of income). We can guess that many of these are essentially fixed dollar amounts, and so the fraction of income you spend on them always goes down as you make more.</h4></p></div>
+    </div>
 
     
 </div> <!-- /container -->

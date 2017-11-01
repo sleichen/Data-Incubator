@@ -19,6 +19,10 @@ body {
   height: 425px;
   width: 700px;
 }
+#page {
+  height: 425px;
+  width: 700px;
+}
 .sidebar-wrapper {
   height: 100%;
   position: relative;
