@@ -1,0 +1,31 @@
+html, body, #container {
+  height: 100%;
+  width: 100%;
+}
+body {
+  /* height of .navbar, customize with @navbar-height variable */
+  padding-top: 50px;
+}
+.navbar {
+  min-height: 50px;
+}
+#sidebar {
+  float: left;
+  height: 100%;
+  max-width: 100%;
+  width: 150px;
+}
+#mapid {
+  height: 425px;
+  width: 700px;
+}
+.sidebar-wrapper {
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+@media (max-width: 767px) {
+#sidebar {
+  display: none;
+}
+}

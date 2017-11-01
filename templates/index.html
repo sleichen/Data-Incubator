@@ -2,11 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	
-	<title>State Statistics</title>
 
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     
     <link href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.7.min.css" rel="stylesheet" type="text/css">
@@ -17,6 +16,11 @@
  
     <link rel="stylesheet" href= "{{ url_for('static',filename='leaflet/leaflet.css') }}" >
     <script src="{{ url_for('static',filename='leaflet/leaflet.js') }}"></script>
+
+    <link rel="stylesheet" href= "{{ url_for('static',filename='display.css') }}" >
+
+    <title>Income Predictions</title>
+
     <!-- 
     <link rel="stylesheet" href="leaflet/leaflet.css" />
     <script src="leaflet/leaflet.js"></script>
@@ -26,28 +30,43 @@
 </head>
 <body>
 
-    <div style = 'padding:20px'><h1>State Incomes</h1></div>
-    
-    
-{{ bok_script | safe }} 
+{{ lineplot_script | safe }} 
+{{ barplot_script | safe }}
 
-    <div style = 'float:left;padding:20px'>  <div id="mapid" style="width: 800px; height: 600px;"></div> </div>
-    <div style= 'float:left;padding:20px'> {{ bok_div | safe }} </div>
-
-    
-<div style = 'width:800px;padding:20px'>        
-    <div id="heading">
-       <h2>The States You Have Selected:</h2>
+<div class="container theme-showcase" role = "main">
+    <div class="jumbotron">
+        <h1>Predicting Income By State</h1>
+        <p>Using income tax return data from the IRS, we can predict per-person income on a state-by-state basis.</p>
     </div>
-    <div id='selected_states'></div>
-   
-    <form id='state_submit' method = 'post' action="index.html">
-      <input type="hidden" name="states" value="state_list" id='submitted_states'>
-      <input type="submit" value="Submit">
-    </form>       
-</div>    
+ 
+    <div class="row">
+        <div class="col-md-8" id="mapid"></div>
+        <!--<div id="mapid" style="width: 800px; height: 600px;"></div>-->
+        <!--<div style= 'float:left'> {{ lineplot_div | safe }} </div>-->
+        <div class="col-md-4"> {{ lineplot_div | safe }} </div>
+    </div>
+    <!--
+    <div class="well">
+        <p>To begin, use the map to select some states. Then click Submit.</p>
+    </div> <!-- /well -->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">The States You Have Selected</h3>
+            <p>Use the map to select some states. Then click Submit.</p>
+        </div>
+        <div class="panel-body" id = 'selected_states'>
+        </div>
+        <form id='state_submit' method = 'post' action="index.html">
+          <input type="hidden" name="states" value="state_list" id='submitted_states'>
+          <input type="submit" value="Submit">
+        </form> 
+    </div><!-- /panel -->
+
+    <div style= 'float:left'> {{ barplot_div | safe }} </div>
+
+
     
-<div id='test'></div>
+</div> <!-- /container -->
     
     
 <script type="text/javascript" src="{{ url_for('static',filename='us-states.js') }}"></script>

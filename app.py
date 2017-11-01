@@ -6,8 +6,9 @@ import itertools
 from bokeh.plotting import figure, show, output_notebook
 from bokeh.embed import components
 from bokeh.layouts import widgetbox, column
-from bokeh.models import CustomJS
+from bokeh.models import CustomJS, ColumnDataSource, ranges, LabelSet
 from bokeh.models.widgets import Dropdown, CheckboxButtonGroup
+from bokeh.palettes import PuBu
 #import seaborn as sns
 
 import state_abbr
@@ -22,8 +23,12 @@ predicted_data = pd.read_csv('predicted_agi_per_return',index_col = 0)
 def index():
     if request.method == 'GET':
         script = "states_list = ['California']"
-        bok_div = ''
-        bok_script = ''      
+        lineplot_div = ''
+        lineplot_script = ''
+        barplot_div = ''
+        barplot_script = ''
+          
+
         
     if request.method == 'POST':
         states_list = [str(state) for state in request.form["states"].split(',')]
@@ -37,7 +42,7 @@ def index():
 
         # as hex is necessary for bokeh to render the colors properly.
         #colors = itertools.cycle(palette.as_hex())
-        colors = itertools.cycle(['#084594', '#2171b5', '#4292c6', '#6baed6', '#9ecae1', '#c6dbef', '#deebf7', '#f7fbff'])
+        colors = itertools.cycle(['#0072b2', '#009e73', '#d55e00', '#cc79a7', '#f0e442'])
 
 
         plot = figure(plot_width=400, plot_height=400,\
@@ -71,9 +76,42 @@ def index():
         checkbox_button_group.callback = CustomJS(args=args, code=code)
         
         layout = column(plot,checkbox_button_group)
-        bok_script, bok_div = components(layout)  
+        lineplot_script, lineplot_div = components(layout)  
     
-    return render_template('/index.html', script = script, bok_script = bok_script, bok_div = bok_div )
+
+
+        correlations = pd.read_csv('correlations',index_col = 0)
+
+        source = ColumnDataSource(dict(x = list(correlations.index), 
+                              y =list(correlations.values)))
+
+        x_label = "Feature"
+        y_label = "Correlation Coefficient"
+        title = "Features Correlated with AGI/Return"
+        plot = figure(plot_width=600, plot_height=600, tools="save",
+            x_axis_label = x_label,
+            y_axis_label = y_label,
+            title=title,
+            x_minor_ticks=2,
+            x_range = source.data["x"],
+            y_range= ranges.Range1d(start=-0.4,end=0.3))
+
+
+        #labels = LabelSet(x='x', y='y', text='y', level='glyph',
+        #        x_offset=-13.5, y_offset=0, source=source, render_mode='canvas')
+
+        plot.vbar(source=source,x='x',top='y',bottom=0,width=0.3, color = '#40e0d0') #, color=PuBu[7][2])
+        plot.xaxis.major_label_orientation = np.pi/3
+
+        #plot.add_layout(labels)
+        barplot_script, barplot_div = components(plot) 
+
+
+
+
+    return render_template('/index.html', script = script, lineplot_script = lineplot_script,
+                         lineplot_div = lineplot_div, barplot_script = barplot_script,
+                         barplot_div = barplot_div )
         
 if __name__ == '__main__':
     app.run(host = '0.0.0.0', port=33507)
