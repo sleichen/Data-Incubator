@@ -8,7 +8,6 @@ from bokeh.embed import components
 from bokeh.layouts import widgetbox, column
 from bokeh.models import CustomJS
 from bokeh.models.widgets import Dropdown, CheckboxButtonGroup
-import seaborn as sns
 
 import state_abbr
 
