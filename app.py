@@ -8,7 +8,7 @@ from bokeh.embed import components
 from bokeh.layouts import widgetbox, column
 from bokeh.models import CustomJS
 from bokeh.models.widgets import Dropdown, CheckboxButtonGroup
-import seaborn as sns
+#import seaborn as sns
 
 import state_abbr
 
@@ -32,10 +32,13 @@ def index():
        
 
         # define the color palette
-        ncolors = 5
-        palette = sns.palettes.color_palette('colorblind', ncolors)
+        #ncolors = 5
+        #palette = sns.palettes.color_palette('colorblind', ncolors)
+
         # as hex is necessary for bokeh to render the colors properly.
-        colors = itertools.cycle(palette.as_hex())
+        #colors = itertools.cycle(palette.as_hex())
+        colors = itertools.cycle(['#084594', '#2171b5', '#4292c6', '#6baed6', '#9ecae1', '#c6dbef', '#deebf7', '#f7fbff'])
+
 
         plot = figure(plot_width=400, plot_height=400,\
         title = 'Adjusted Gross Income per Return',\
